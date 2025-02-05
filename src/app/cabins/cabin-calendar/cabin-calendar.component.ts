@@ -74,118 +74,157 @@ import { FormsModule } from '@angular/forms';
     </div>
   `,
   styles: [`
+    /* Header Styling */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background-color: #007bff;
       color: white;
-      padding: 1rem;
+      padding: 1rem 2rem;
       border-radius: 12px 12px 0 0;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    /* Sign Out Button */
     .signout-button {
       background-color: #dc3545;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.4rem;
       color: white;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
+
     .signout-button:hover {
       background-color: #c82333;
+      transform: translateY(-2px);
     }
-    .datetime-selector {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin: 1.5rem 0;
-      background: #f1f3f5;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .datetime-selector label {
-      font-weight: bold;
-      color: #333;
-    }
-    .datetime-selector input, .datetime-selector select {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-      outline: none;
-    }
-    .btn-submit {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .btn-submit:hover {
-      background: #0056b3;
-    }
-    .conflict-message {
-      color: red;
-      font-weight: bold;
-    }
+
+    /* Main Container */
     .calendar-container {
       max-width: 1200px;
       width: 90%;
       margin: 2rem auto;
       padding: 2rem;
-      background: white;
+      background: #fdfdfd;
       border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
+
+    /* Date & Time Selector */
+    .datetime-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      margin: 1.5rem 0;
+      background: #ffffff;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .datetime-selector label {
+      font-weight: 600;
+      color: #343a40;
+    }
+
+    .datetime-selector input,
+    .datetime-selector select {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    /* Conflict Message */
+    .conflict-message {
+      color: #dc3545;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    /* Weekly Calendar Grid */
     .weekly-calendar {
       display: grid;
-      grid-template-columns: 120px repeat(16, 1fr);
-      gap: 8px;
-      background: #f9f9f9;
+      grid-template-columns: 100px repeat(16, 1fr);
+      gap: 4px;
+      background: #ffffff;
       border-radius: 12px;
-      padding: 1.5rem;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       overflow-x: auto;
     }
+
+    /* Time and Day Labels */
     .time-header, .day-label {
       font-weight: 600;
-      padding: 12px;
+      padding: 10px;
       background: #007bff;
       color: white;
-      border-radius: 8px;
       text-align: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      transition: background 0.3s ease;
     }
+
     .day-label {
       background: #2c3e50;
     }
+
+    /* Slot Styling */
     .slot {
-      width: 100%;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
-      font-weight: 600;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
+
     .slot.available {
-      background: #28a745;
-      color: white;
+      background: #e9f9ee;
+      color: #28a745;
     }
+
     .slot.occupied {
-      background: #dc3545;
-      color: white;
+      background: #fdeaea;
+      color: #dc3545;
     }
+
     .slot:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
+
+    /* Back Button */
     .back-button {
       margin-top: 1.5rem;
       padding: 0.75rem 1.5rem;
@@ -195,29 +234,77 @@ import { FormsModule } from '@angular/forms';
       border-radius: 8px;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.3s ease-in-out;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
+
     .back-button:hover {
       background: #0056b3;
+      transform: translateY(-2px);
     }
+
+    /* Modal Popup Styling */
     .modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
       display: flex;
       justify-content: center;
       align-items: center;
+      backdrop-filter: blur(3px);
     }
+
     .modal-content {
-      background: white;
+      background: #ffffff;
       padding: 2rem;
       border-radius: 12px;
       width: 350px;
       text-align: center;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h3 {
+      margin-bottom: 1rem;
+      font-size: 1.6rem;
+      color: #343a40;
+    }
+
+    .modal-content p {
+      margin-bottom: 1.5rem;
+      color: #6c757d;
+      font-weight: 500;
+    }
+
+    /* Modal Buttons */
+    .btn-confirm, .btn-cancel, .btn-close {
+      padding: 0.6rem 1.4rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      margin: 0.5rem;
+    }
+
+    .btn-confirm {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-cancel {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-close {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-confirm:hover, .btn-cancel:hover, .btn-close:hover {
+      transform: translateY(-2px);
     }
   `]
 })
