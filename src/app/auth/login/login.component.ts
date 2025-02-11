@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -80,7 +81,7 @@ import { FormsModule } from '@angular/forms';
       cursor: pointer;
     }
     button:hover {
-      background-color:rgb(24, 61, 230);
+      background-color: rgb(24, 61, 230);
     }
     p {
       text-align: center;
@@ -92,12 +93,27 @@ export class LoginComponent {
   username = '';
   password = '';
 
-  constructor(private router: Router) {}
+  // Inject AuthService
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   onSubmit() {
-    // TODO: Implement actual login logic
-    console.log('Login attempt:', this.username);
-    // For now, just navigate to cabins page
-    this.router.navigate(['/cabins']);
+    // Call the backend via AuthService
+    this.authService.login({ username: this.username, password: this.password })
+      .subscribe({
+        next: (response) => {
+          console.log('Login response:', response);
+          // For now just store the username in localStorage
+          localStorage.setItem('currentUser', this.username);
+          alert('Login successful!');
+          this.router.navigate(['/cabins']);
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Login failed. ' + (err.error || ''));
+        }
+      });
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -21,9 +22,9 @@ import { FormsModule } from '@angular/forms';
               name="username"
               required
             />
-            @if (usernameError) {
-              <p class="error">{{ usernameError }}</p>
-            }
+            <!-- Angular doesn't have @if syntax. 
+                 Use *ngIf in Angular templates instead -->
+            <p class="error" *ngIf="usernameError">{{ usernameError }}</p>
           </div>
 
           <div class="form-group">
@@ -46,9 +47,7 @@ import { FormsModule } from '@angular/forms';
               name="password"
               required
             />
-            @if (passwordError) {
-              <p class="error">{{ passwordError }}</p>
-            }
+            <p class="error" *ngIf="passwordError">{{ passwordError }}</p>
           </div>
 
           <button type="submit">Sign Up</button>
@@ -60,59 +59,57 @@ import { FormsModule } from '@angular/forms';
       </div>
     </div>
   `,
-  styles: [
-    `
-      .auth-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f5f5f5;
-      }
-      .auth-box {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-      }
-      .form-group {
-        margin-bottom: 1rem;
-      }
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-      }
-      input {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      }
-      button {
-        width: 100%;
-        padding: 0.75rem;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #0056b3;
-      }
-      p {
-        text-align: center;
-        margin-top: 1rem;
-      }
-      .error {
-        color: red;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-      }
-    `,
-  ],
+  styles: [`
+    .auth-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .auth-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    p {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .error {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  `],
 })
 export class SignupComponent {
   username = '';
@@ -121,23 +118,20 @@ export class SignupComponent {
   usernameError = '';
   passwordError = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   onSubmit() {
+    // Reset errors
     this.usernameError = '';
     this.passwordError = '';
 
-    // Check if username meets requirements (1 capital letter & 1 number)
+    // Client-side checks (optional)
     const usernameRegex = /^(?=.*[A-Z])(?=.*\d).+$/;
     if (!usernameRegex.test(this.username)) {
       this.usernameError = 'Username must include at least 1 capital letter and 1 number.';
-      return;
-    }
-
-    // Check if username already exists (mock logic)
-    const existingUsers = ['User1', 'Admin123'];
-    if (existingUsers.includes(this.username)) {
-      this.usernameError = 'Username already exists. Please choose another.';
       return;
     }
 
@@ -149,9 +143,21 @@ export class SignupComponent {
       return;
     }
 
-    // Mock success signup
-    console.log('Signup successful:', this.username, this.email);
-    alert('Signup successful! Redirecting to cabins...');
-    this.router.navigate(['/cabins']);
+    // Now call the backend to actually sign up
+    this.authService.signup({
+      username: this.username,
+      password: this.password,
+      email: this.email
+    }).subscribe({
+      next: (response) => {
+        console.log('Signup successful:', response);
+        alert('Signup successful! Redirecting to cabins...');
+        this.router.navigate(['/cabins']);
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Signup failed. ' + (err.error || ''));
+      }
+    });
   }
 }

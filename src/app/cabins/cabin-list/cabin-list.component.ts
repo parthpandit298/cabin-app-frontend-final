@@ -1,12 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-
-interface Cabin {
-  id: number;
-  name: string;
-  nextVacantTime: string;
-}
+import { Cabin,CabinService } from '../../services/cabin.service';
 
 @Component({
   selector: 'app-cabin-list',
@@ -20,12 +15,14 @@ interface Cabin {
 
     <div class="cabin-container">
       <div class="cabin-grid">
-        @for (cabin of cabins; track cabin.id) {
-          <div class="cabin-card" [routerLink]="['/cabin', cabin.id]">
-            <h2>{{ cabin.name }}</h2>
-            <p>Next Available: {{ cabin.nextVacantTime }}</p>
-          </div>
-        }
+        <div 
+          class="cabin-card" 
+          *ngFor="let cabin of cabins"
+          (click)="goToCabin(cabin.id)"
+        >
+          <h2>{{ cabin.name }}</h2>
+          <p>Next Available: {{ cabin.nextVacantTime }}</p>
+        </div>
       </div>
     </div>
   `,
@@ -97,21 +94,34 @@ interface Cabin {
     }
   `]
 })
-export class CabinListComponent {
-  cabins: Cabin[] = [
-    { id: 1, name: 'Cabin 1', nextVacantTime: '10:30 AM' },
-    { id: 2, name: 'Cabin 2', nextVacantTime: '11:00 AM' },
-    { id: 3, name: 'Cabin 3', nextVacantTime: '2:15 PM' },
-    { id: 4, name: 'Cabin 4', nextVacantTime: '3:45 PM' },
-    { id: 5, name: 'Cabin 5', nextVacantTime: '12:00 PM' },
-    { id: 6, name: 'Cabin 6', nextVacantTime: '4:00 PM' }
-    // the timings are hardcoded for now , once the backend is built we change this 
-  ];
+export class CabinListComponent implements OnInit {
+  cabins: Cabin[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private cabinService: CabinService
+  ) {}
+
+  ngOnInit() {
+    this.loadCabins();
+  }
+
+  loadCabins() {
+    this.cabinService.getAllCabins().subscribe({
+      next: (data) => {
+        this.cabins = data;
+      },
+      error: (err) => {
+        console.error('Error fetching cabins:', err);
+      }
+    });
+  }
+
+  goToCabin(cabinId: number) {
+    this.router.navigate(['/cabin', cabinId]);
+  }
 
   signOut() {
-    // Clear user session data (for now just frontend logic)
     localStorage.removeItem('currentUser');
     alert('You have been signed out.');
     this.router.navigate(['/login']);
